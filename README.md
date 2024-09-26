@@ -27,10 +27,15 @@ applying-marl-ht-and-defence/
 ├── hyperparameters.csv              # (Tuned) hyperparameter values
 ├── parameters.csv                   # Parameter values
 ├── regagent-parameters              # Folder containing trained regular agents neural networks
+├── hyperparameter-tuning            # Folder containing data and R scripts for hyperparameter tuning
+    ├── ch4-exp1-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 1
+    ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
+    └── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
 ├── results                          # Folder containing R scripts for data analysis and visualisation
     ├── exp1-results                 # Data collected from experiment 1
     ├── exp2-results                 # Data collected from experiment 2
-    └── plots                        # Figures
+    ├── figures                      # Visualisation of the environment and agents' behaviour during training
+    └── plots                        # Figures generated with R
 ├── R-scripts                        # Folder containing R scripts for data analysis and visualisation
     ├── ch4-exp1-analysis.R          # R script for analysing and visualising experiment 1 data
     ├── ch4-exp2-attack-analysis.R   # R script for analysing and visualising attacker behaviour
