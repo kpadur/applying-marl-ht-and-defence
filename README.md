@@ -24,6 +24,8 @@ applying-marl-ht-and-defence/
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
 ├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
+├── sa-param-values.py               # Generate parameter sets for the sensitivity analysis using Sobol's method
+├── sa-results-analysis.py           # Analyse the results of the sensitivity analysis using Sobol's method
 ├── hyperparameters.csv              # (Tuned) hyperparameter values
 ├── parameters.csv                   # Parameter values
 ├── regagent-parameters              # Folder containing trained regular agents neural networks
