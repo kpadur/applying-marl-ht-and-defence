@@ -30,11 +30,7 @@ applying-marl-ht-and-defence/
 ├── hyperparameter-tuning            # Folder containing data and R scripts for hyperparameter tuning
     ├── ch4-exp1-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 1
     ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
-    ├── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
-    └── plots                        # Figures generated in R using data collected during hyperparameter tuning
-        ├── ch4-exp1-hp-tuning.pdf               # Visualisation of hyperparameter trial and received rewards
-        ├── ch4-exp2-hp-tuning-attackers.pdf     # Visualisation of hyperparameter trial and received rewards
-        └── ch4-exp2-hp-tuning-defenders.pdf     # Visualisation of hyperparameter trial and received rewards
+    └── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
 ├── results                          # Folder containing R scripts for data analysis and visualisation
     ├── exp1-results                 # Data collected from experiment 1
     ├── exp2-results                 # Data collected from experiment 2
