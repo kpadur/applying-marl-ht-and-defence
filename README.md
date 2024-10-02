@@ -45,3 +45,31 @@ applying-marl-ht-and-defence/
 ├── LICENSE.md                       # License
 └── README.md                        # Project documentation
 ```
+## License
+MIT
+## Prerequisites
+```
+Python 3.10 or higher version is required.
+
+The following Python libraries are required:
+- numpy (version 1.24.2 or higher)
+- pandas (version 1.5.3 or higher)
+- torch (version 1.13.1 or higher)
+- matplotlib (version 3.7.0 or higher)
+- gymnasium (version 0.29.1 or higher)
+- networkx (version 3.0 or higher)
+- pettingzoo (version 1.24.1 or higher)
+- optuna (version 3.6.1 or higher)
+- SALib (version 1.5.0 or higher)
+- statsmodels (version 0.14.2 or higher)
+
+R version 4.3.1 or higher version is required for data analysis and visualisation.
+
+The following R libraries are required:
+- readr (version 2.1.4 or higher)
+- ggplot2 (version 3.4.4 or higher)
+- cowplot (version 1.1.2 or higher)
+- zoo (version 1.8 or higher)
+- dplyr (version 1.1.3 or higher)
+- tidyr (version 1.3.0 or higher)
+```
