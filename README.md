@@ -14,7 +14,6 @@ applying-marl-ht-and-defence/
 ├── nns.py                           # Architecture of deep neural networks
 ├── data_analysis_exp1.py            # Functions to analyse training data (experiment 1)
 ├── data_analysis_exp2.py            # Functions to analyse training data (experiment 2)
-├── other_functions.py               # Functions to visualise training results
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
 ├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
