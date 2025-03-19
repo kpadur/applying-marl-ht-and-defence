@@ -1,13 +1,6 @@
 # Code for "Applying multi-agent reinforcement learning to study hybrid threats and defensive countermeasures"
 ## Introduction
-The threat landscape continues to evolve, with attackers using more advanced tools to launch large-scale, sophisticated attacks at lower costs. 
-By continuously integrating AI and ML techniques, attackers can become capable of launching autonomous hybrid attack campaigns that synchronise 
-cyberattacks with disinformation campaigns whilst adapting to defensive countermeasures. The potential of such autonomous adversaries raises 
-concerns for the future of defence. While AI and ML algorithms effectively detect intrusions and anomalies, the decision to respond lies with 
-humans, so the costs and response times can be high. To address this problem, autonomous defence systems that can make real-time response 
-decisions whilst adapting to adversarial behaviours are needed. We propose a novel MARL approach in which both attackers and defenders are DRL 
-agents. They can autonomously conduct multi-domain attacks and defend against them. We develop a custom environment representing a 
-Cyber-Physical-Social System and train MARL agents to devise offensive and defensive strategies.
+The threat landscape continues to evolve, with attackers using more advanced tools to launch large-scale, sophisticated attacks at lower costs. Attackers are employing AI and ML techniques to enhance both cyberattacks and disinformation campaigns, paving the way for autonomous hybrid attack campaigns that adapt dynamically to defensive countermeasures. The potential of such autonomous adversaries raises concerns for the future of defence. While AI and ML algorithms effectively detect intrusions and anomalies, the decision to respond lies with humans, so the costs and response times can be high. To address this problem, we need autonomous defence systems that can make real-time response decisions whilst adapting to adversarial behaviours and not themselves providing a means by which attacks can be amplified.
 ## Project structure
 ```
 applying-marl-ht-and-defence/
@@ -19,7 +12,8 @@ applying-marl-ht-and-defence/
 ├── a2c_def_agent.py                 # Defenders' behaviour in the environment
 ├── a2c_mal_agent.py                 # Attackers' behaviour in the environment
 ├── nns.py                           # Architecture of deep neural networks
-├── data_analysis.py                 # Functions to analyse training data
+├── data_analysis_exp1.py            # Functions to analyse training data (experiment 1)
+├── data_analysis_exp2.py            # Functions to analyse training data (experiment 2)
 ├── other_functions.py               # Functions to visualise training results
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
 ├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
