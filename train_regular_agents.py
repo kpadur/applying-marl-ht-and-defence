@@ -7,7 +7,7 @@
 # Import libraries
 from environment_exp1 import Environment
 from a2c_agent import A2CRegAgent
-from data_analysis_exp1 import process_regagent_rewards, process_regagent_states_average, process_regagent_actions, \
+from data_analysis import process_regagent_rewards, process_regagent_states_average, process_regagent_actions, \
     process_service_provider_availability
 from save_data import read_csv_to_dict, save_data_to_csv
 import numpy as np
