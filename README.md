@@ -18,9 +18,9 @@ applying-marl-ht-and-defence/
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
 ├── sa-param-values.py               # Generate parameter sets for the sensitivity analysis using Sobol's method
 ├── sa-results-analysis.py           # Analyse the results of the sensitivity analysis using Sobol's method
-├── hyperparameters.csv              # (Tuned) hyperparameter values
-├── parameters.csv                   # Parameter values
-├── regagent-parameters              # Folder containing trained regular agents neural networks
+├── data                             # Folder containing data and R scripts for hyperparameter tuning
+    ├── hyperparameters.csv          # (Tuned) hyperparameter values
+    └── parameters.csv               # Parameter values
 ├── hyperparameter-tuning            # Folder containing data and R scripts for hyperparameter tuning
     ├── ch4-exp1-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 1
     ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
@@ -28,8 +28,7 @@ applying-marl-ht-and-defence/
 ├── results                          # Folder containing R scripts for data analysis and visualisation
     ├── exp1-results                 # Data collected from experiment 1
     ├── exp2-results                 # Data collected from experiment 2
-    ├── figures                      # Visualisation of the environment and agents' behaviour during training
-    └── plots                        # Figures generated with R
+    └── regagent-parameters          # Folder containing trained regular agents neural networks
 ├── R-scripts                        # Folder containing R scripts for data analysis and visualisation
     ├── ch4-exp1-analysis.R          # R script for analysing and visualising experiment 1 data
     ├── ch4-exp2-attack-analysis.R   # R script for analysing and visualising attacker behaviour
