@@ -12,8 +12,7 @@ applying-marl-ht-and-defence/
 ├── a2c_def_agent.py                 # Defenders' behaviour in the environment
 ├── a2c_mal_agent.py                 # Attackers' behaviour in the environment
 ├── nns.py                           # Architecture of deep neural networks
-├── data_analysis_exp1.py            # Functions to analyse training data (experiment 1)
-├── data_analysis_exp2.py            # Functions to analyse training data (experiment 2)
+├── data_analysis.py                 # Functions to analyse training data
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
 ├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
