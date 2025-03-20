@@ -39,7 +39,7 @@ nMalAgents = 0
 
 # %% [markdown]
 # Initialise (tuned) hyperparameters
-hyperparameters = read_csv_to_dict("hyperparameters.csv")
+hyperparameters = read_csv_to_dict("data/hyperparameters.csv")
 alpha_rnn1 = hyperparameters['alpha_1']
 alpha_rnn2 = hyperparameters['alpha_2']
 gamma_rnn1 = hyperparameters['gamma_1']
@@ -51,7 +51,7 @@ beta_decay = int(hyperparameters['n_1'])
 # %% [markdown]
 # Initialise social network, cyber-physical system, and agent parameters
 # Load parameters
-parameters = read_csv_to_dict("parameters.csv")
+parameters = read_csv_to_dict("data/parameters.csv")
 
 # Social network parameters
 kappa = int(parameters['kappa'])
