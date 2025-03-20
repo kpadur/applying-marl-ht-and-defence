@@ -45,20 +45,14 @@ class A2CMalAgent(torch.nn.Module):
         
     def sample_actions(self, states):
         """
-        Samples the action to be taken in the current attack stage
-        state:          numpy array of shape (timestep, state_shape),
-                        shows the environment states
-        attack_stage:   int,
-                        shows the current attack stage
-        return:         int,
-                        shows the action to be taken in the current attack stage
+        Samples the action to be taken in the current attack stage.
         """
-        # Determine action based on the current attack stage
-        if len(states) <= 1: # NOTE to be changed in case of other experiments - not scalable
+        # Sample action based on the current attack stage
+        if len(states) <= 1:
             action = 0
             bot_action = -1; botnet = {}
             sn_actions_dict = {f"malagent{magent}": -1 for magent in self.malagents}
-        elif states[-1][-1] != 14: # only in 0-13 stages
+        elif states[-1][-1] != 14: # Only before attack campaign has ended
             # Get the current attack stage
             state_sequence = states
             # Prepare a sequence of states
@@ -68,24 +62,24 @@ class A2CMalAgent(torch.nn.Module):
             # Use the logits from the current time step to determine the action
             action_probs = torch.nn.functional.softmax(logits, -1).cpu().detach().numpy().squeeze(0)
             # Create a mask for allowed actions in the current attack stage
-            attack_stage = states[-1][-1] # last element of the last state
+            attack_stage = states[-1][-1]
             allowed_actions = self.stage_actions_dict[attack_stage]
             action_mask = np.zeros(self.n_stage_actions)
             action_mask[allowed_actions] = 1
             # Apply the action mask to zero out invalid actions
             masked_action_probs = action_probs * action_mask
-            masked_action_probs /= np.sum(masked_action_probs) # Re-normalize probabilities
+            masked_action_probs /= np.sum(masked_action_probs) # Re-normalise probabilities
             action = np.random.choice(self.n_stage_actions, p = masked_action_probs)
 
             # Given the attack stage action, determine what to do in this attack stage
             last_state = states[-1]
             # Make decisions based on the attack stage
-            if action in [0, 7]:
+            if action in [0, 7]: # continue reconnaissance, terminate attack campaign
                 bot_action = -1; botnet = {}; sn_actions_dict = {f"malagent{magent}": -1 for magent in self.malagents}
             elif action in [1, 4]: # start cyberattack, continue cyberattack
                 bot_action, botnet = self.sample_bot_size(last_state)
                 sn_actions_dict = {f"malagent{magent}": -1 for magent in self.malagents}
-            elif action in [2,5]: # start disinfo, continue disinfo
+            elif action in [2, 5]: # start disinfo, continue disinfo
                 bot_action = -1; botnet = {}
                 sn_actions_dict = self.sample_contacts(last_state)
             else:
@@ -99,15 +93,9 @@ class A2CMalAgent(torch.nn.Module):
     
     def sample_bot_size(self, state):
         """
-        Samples bot size as the amount of resources to be used in the attack
-        state:  numpy array of shape (state_shape),
-        action: int,
-                shows the action to be taken in the current attack stage
-        return: int, int, list,
-                shows attack target id, bot size, and list of attackers in botnet
+        Samples the amount of resources (bot size) to be used in the attack.
         """
         # Detemine the target and bot size based on the selected action in current attack stage
-
         state = torch.tensor(state, device=self.device, dtype=torch.float32).unsqueeze(0)
         with torch.no_grad():
             logits, _ = self.cyber_action_nn(state)
@@ -119,18 +107,12 @@ class A2CMalAgent(torch.nn.Module):
         botnet_ids = np.random.choice(self.malagents, size=bot_size, replace = False) # list of attackers in botnet
         # Form botnet as a dictionary of {attacker_id: target}
         botnet = {f"malagent{id}": self.attack_target for id in botnet_ids}
-
         return bot_action, botnet
 
     def sample_contacts(self, state):
         """
         Samples the contacts to be made in the current attack stage;
-        each malicious agent is assigned a contact to spread disinformation to.
-        state:  numpy array of shape (state_shape),
-        action: int,
-                shows the action to be taken in the current attack stage
-        return: int, numpy array of shape (n_malagents),
-                shows opinion to be spread, and array of whom each malicious agent contacts
+        each malicious agent is assigned a contact to whom to spread disinformation.
         """
         state = torch.tensor(state, device=self.device, dtype=torch.float32).unsqueeze(0)
         with torch.no_grad():
@@ -217,7 +199,6 @@ class A2CMalAgent(torch.nn.Module):
         J = torch.mean(log_probs_for_actions * advantage)
         H = -(probs * log_probs).sum(-1).mean() # entropy of a distribution
         loss3 = -(J + entropy_coef * H)
-        # loss3 = Variable(loss3, requires_grad=True)
 
         # Backpropagate loss
         opt1 = self.stage_action_opt
