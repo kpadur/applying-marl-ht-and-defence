@@ -8,7 +8,7 @@ from environment_exp2 import Environment
 from a2c_agent import A2CRegAgent
 from a2c_def_agent import A2CServiceProvider
 from a2c_mal_agent import A2CMalAgent
-from data_analysis_exp2 import moving_average, process_regagent_states_average, process_regagent_actions, process_regagent_rewards, \
+from data_analysis import moving_average, process_regagent_states_average, process_regagent_actions, process_regagent_rewards, \
     process_attacker_rewards, process_attacker_actions, process_defender_rewards, process_service_provider_availability
 from save_data import read_csv_to_dict
 import numpy as np
