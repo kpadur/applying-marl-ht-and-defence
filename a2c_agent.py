@@ -7,11 +7,11 @@ class A2CRegAgent:
     def __init__(self, state_shape, n_actions, n_opinions, rnn1_lr, rnn2_lr, device):
         self.device = device
 
-        # Initialise single action and opinion networks
+        # Initialise action and opinion networks
         self.action_nn = self.init_action_nn(state_shape, n_actions)
         self.opinion_nn = self.init_opinion_nn(state_shape, n_opinions)
 
-        # Initialise optimizers for the networks
+        # Initialise optimisers for the networks
         self.action_opt = torch.optim.Adam(self.action_nn.parameters(), lr=rnn1_lr)
         self.opinion_opt = torch.optim.Adam(self.opinion_nn.parameters(), lr=rnn2_lr)
 
@@ -45,9 +45,8 @@ class A2CRegAgent:
 
     def compute_a2c_loss(self, states, all_actions, total_rewards, gamma_rnn1, gamma_rnn2, entropy_coef):
         """
-        Compute the losses for actions and opinions without backpropagation or optimization.
+        Compute the losses for actions and opinions.
         """
-
         states = np.array(states)
         actions = np.array([t[0] for t in all_actions])
         opinions = np.array([t[1] for t in all_actions])
@@ -64,11 +63,11 @@ class A2CRegAgent:
         actions_t = torch.tensor(actions, device=self.device, dtype=torch.long)
         opinions_t = torch.tensor(opinions, device=self.device, dtype=torch.long)
 
-        # # Action loss computation
+        # Action loss computation
         logits_a, state_values_a = self.action_nn(states_t)
         loss_a = self.compute_policy_loss(logits_a, state_values_a, rewards_to_go, actions_t, entropy_coef)
 
-        # # Opinion loss computation
+        # Opinion loss computation
         logits_o, state_values_o = self.opinion_nn(states_t)
         loss_o = self.compute_policy_loss(logits_o, state_values_o, feedback_to_go, opinions_t, entropy_coef)
 
