@@ -24,7 +24,7 @@ applying-marl-ht-and-defence/
     ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
     └── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
 ├── regagent-parameters              # Folder contraining trained neural networks for regular agents
-├── R-scripts                        # Folder containing R scripts for data analysis and visualisation
+├── results                          # Folder containing R scripts for results analysis and visualisation
     ├── ch4-exp1-analysis.R          # R script for analysing and visualising experiment 1 data
     ├── ch4-exp2-attack-analysis.R   # R script for analysing and visualising attacker behaviour
     └── ch4-exp2-defence-analysis.R  # R script for analysing and visualising defender behaviour
