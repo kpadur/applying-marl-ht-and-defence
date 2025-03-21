@@ -32,7 +32,7 @@ experiment = 2
 # %% [markdown]
 # Specify output directory
 save_path = os.path.join("results", "exp2-results")
-nn_path = os.path.join("results", "regagent-parameters")
+nn_path = os.path.join("regagent-parameters")
 # %% [markdown]
 # Specify number of agents in the environment
 nProviders = 3
@@ -150,12 +150,12 @@ regular_agents = {f"regagent{agent}": A2CRegAgent(state_shape, n_actions, n_opin
 
 for agent_name, agent in regular_agents.items():
     # Load Action NN and its optimizer
-    action_checkpoint = torch.load(os.path.join(nn_path, f'{agent_name}_checkpoint_actions_2025-01-22_743.pth'))
+    action_checkpoint = torch.load(os.path.join(nn_path, f'{agent_name}_checkpoint_actions.pth'))
     agent.action_nn.load_state_dict(action_checkpoint['actions_state_dict'])
     agent.action_opt.load_state_dict(action_checkpoint['actions_opt_state_dict'])
 
     # Load Opinion NN and its optimizer
-    opinion_checkpoint = torch.load(os.path.join(nn_path, f'{agent_name}_checkpoint_opinions_2025-01-22_743.pth'))
+    opinion_checkpoint = torch.load(os.path.join(nn_path, f'{agent_name}_checkpoint_opinions.pth'))
     agent.opinion_nn.load_state_dict(opinion_checkpoint['opinions_state_dict'])
     agent.opinion_opt.load_state_dict(opinion_checkpoint['opinions_opt_state_dict'])
 
