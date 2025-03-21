@@ -23,6 +23,7 @@ applying-marl-ht-and-defence/
     ├── ch4-exp1-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 1
     ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
     └── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
+├── regagent-parameters              # Folder contraining trained neural networks for regular agents
 ├── results                          # Folder containing R scripts for data analysis and visualisation
     ├── exp1-results                 # Data collected from experiment 1
     ├── exp2-results                 # Data collected from experiment 2
