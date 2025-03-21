@@ -1,4 +1,5 @@
-# Chapter 4
+# Applying multi-agent reinforcement learning to study hybrid threats and defensive countermeasures
+# Exp 1 data analysis and visualisation
 # Load libraries
 library(readr)
 library(ggplot2)
