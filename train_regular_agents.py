@@ -29,7 +29,7 @@ experiment = 1
 # %% [markdown]
 # Specify output directory
 save_path = os.path.join("results", "exp1-results")
-nn_path = os.path.join("regagent-parameters-test")
+nn_path = os.path.join("regagent-parameters")
 
 # %% [markdown]
 # Specify number of agents in the environment
