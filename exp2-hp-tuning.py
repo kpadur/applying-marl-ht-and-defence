@@ -9,8 +9,7 @@ from environment_exp2 import Environment
 from a2c_agent import A2CRegAgent
 from a2c_def_agent import A2CServiceProvider
 from a2c_mal_agent import A2CMalAgent
-from data_analysis import process_attacker_rewards, process_defender_rewards, process_regagent_rewards, process_regagent_states_average
-from other_functions import moving_average
+from data_analysis import process_attacker_rewards, process_defender_rewards, process_regagent_rewards, process_regagent_states_average, moving_average
 import numpy as np
 import torch
 import random
@@ -21,6 +20,7 @@ import datetime
 import csv
 import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.cm as cm
 from IPython.display import clear_output
 
 # %% [markdown]
@@ -32,8 +32,8 @@ experiment = 2
 
 # %% [markdown]
 # Specify output directory
-save_data_path = os.path.join("hyperparameter_tuning", "exp2-results")
-save_figures_path = os.path.join("hyperparameter_tuning", "exp2-figures")
+save_data_path = os.path.join("hyperparameter-tuning", "exp2-results")
+save_figures_path = os.path.join("hyperparameter-tuning", "exp2-figures")
 get_nn_path = os.path.join("regagent-parameters")
 # %% [markdown]
 # Define the objective function
@@ -44,7 +44,7 @@ def objective(trial):
     nMalAgents = 10
 
     # Suggest hyperparameters
-    df = pd.read_csv("hyperparameters.csv")
+    df = pd.read_csv("data/hyperparameters.csv")
     hyperparameters = dict(zip(df['hyperparameter'], df['value']))
 
     alpha_rnn1 = hyperparameters['alpha_1']
@@ -65,7 +65,7 @@ def objective(trial):
     beta_decay = trial.suggest_int('beta_decay', 1e+4, 1.5e+4)
 
     # Initialise social network, cyber-physical system, and agent parameters
-    df = pd.read_csv("parameters.csv")
+    df = pd.read_csv("data/parameters.csv")
     parameters = dict(zip(df['parameter'], df['value']))
 
     # Social network parameters
@@ -81,7 +81,7 @@ def objective(trial):
 
     # Agents' attributes (parameters)
     direct_exp_weight = parameters['direct_exp_weight']
-    satisfaction_threshold = parameters['satisfaction_threshold']
+    feedback_adj_rate = parameters['feedback_adj_rate']
     forgetting_factor = parameters['forgetting_factor']
 
     # Define training time
@@ -91,7 +91,7 @@ def objective(trial):
     save_fig = False
 
     # Seed everything
-    seed = 5282
+    seed = 0
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -101,7 +101,7 @@ def objective(trial):
     # Create environment
     env = Environment(nRegAgents, nMalAgents, nProviders, 
                         kappa, rho, center_up_to_down, center_down_to_up, end_up_to_down, end_down_to_up, cost,
-                        direct_exp_weight, satisfaction_threshold, forgetting_factor)
+                        direct_exp_weight, feedback_adj_rate, forgetting_factor)
 
     # Create lists of agents, form social network of agents, and create attributes
     agent_ids, malagents, providers, neighbours = env.agents, env.malagents, env.providers, env.neighbours
@@ -133,12 +133,12 @@ def objective(trial):
 
     for agent_name, agent in regular_agents.items():
     # Load Action NN and its optimizer
-        action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions_2024-06-24_5281.pth'))
+        action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions.pth'))
         agent.action_nn.load_state_dict(action_checkpoint['actions_state_dict'])
         agent.action_opt.load_state_dict(action_checkpoint['actions_opt_state_dict'])
 
         # Load Opinion NN and its optimizer
-        opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions_2024-06-24_5281.pth'))
+        opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions.pth'))
         agent.opinion_nn.load_state_dict(opinion_checkpoint['opinions_state_dict'])
         agent.opinion_opt.load_state_dict(opinion_checkpoint['opinions_opt_state_dict'])
 
@@ -267,10 +267,8 @@ def objective(trial):
         regagent_action_rewards[episode] = service
         regagent_opinion_rewards[episode] = feedback
         # Process social trust
-        episode_states_pd = process_regagent_states_average(all_observations, providers, episode, n_steps)
-        social_trust_history[episode][0] = episode_states_pd["trust_in_sp0"].mean()
-        social_trust_history[episode][1] = episode_states_pd["trust_in_sp1"].mean()
-        social_trust_history[episode][2] = episode_states_pd["trust_in_sp2"].mean()
+        mean_trust_values = process_regagent_states_average(all_observations, providers, n_steps)
+        social_trust_history[episode] = mean_trust_values
         
         if episode != 1 and episode % vis_freq == 0:
             #clear_output(True)
@@ -280,7 +278,7 @@ def objective(trial):
             # Figure 1. Defender rewards
             plt.figure()
             for sp in providers:
-                plt.plot(moving_average(total_defender_rewards[1:episode,sp]), linewidth=0.9, label=f'Provider {sp+1}')
+                plt.plot(total_defender_rewards[1:episode+1,sp], linewidth=0.9, label=f'Provider {sp+1}')
             plt.xlabel('Episodes')
             plt.ylabel("Cumulative reward for defenders")
             plt.grid()
@@ -292,13 +290,13 @@ def objective(trial):
             # Figure 2.1/2.2: Defender filtering and answering rewards
             fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 4))
             for sp in providers:
-                axes[0].plot(moving_average(defender_filter_rewards[1:episode,sp]), linewidth=0.9, label=f'Provider {sp+1}')
+                axes[0].plot(defender_filter_rewards[1:episode+1,sp], linewidth=0.9, label=f'Provider {sp+1}')
             axes[0].set_xlabel('Episodes')
             axes[0].set_ylabel("Cumulative reward\nfor filtering")
             axes[0].grid()
             axes[0].legend(loc=(0.01,0.50), fontsize='x-small')
             for sp in providers:
-                axes[1].plot(moving_average(defender_answer_rewards[1:episode,sp]), linewidth=0.9, label=f'Provider {sp+1}')
+                axes[1].plot(defender_answer_rewards[1:episode+1,sp], linewidth=0.9, label=f'Provider {sp+1}')
             axes[1].set_xlabel('Episodes')
             axes[1].set_ylabel("Cumulative reward\nfor information spreading")
             axes[1].grid()
@@ -310,13 +308,13 @@ def objective(trial):
             # Figure 3.1/3.2: Defender loss
             fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(15, 4))
             for sp in providers:
-                axs[0].plot(moving_average(loss4_history[1:episode,sp]), linewidth=0.9, label=f'Provider {sp+1}')
+                axs[0].plot(loss4_history[1:episode+1,sp], linewidth=0.9, label=f'Provider {sp+1}')
             axs[0].set_xlabel("Episodes")
             axs[0].set_ylabel("Loss (filtering)")
             axs[0].grid()
             axs[0].legend(loc=(0.01,0.50), fontsize='x-small')
             for sp in providers:
-                axs[1].plot(moving_average(loss5_history[1:episode,sp]), linewidth=0.9, label=f'Provider {sp+1}')
+                axs[1].plot(loss5_history[1:episode+1,sp], linewidth=0.9, label=f'Provider {sp+1}')
             axs[1].set_xlabel("Episodes")
             axs[1].set_ylabel("Loss (answering)")
             axs[1].grid()
@@ -328,11 +326,11 @@ def objective(trial):
             # Attackers
             # Figure 4: Attacker rewards 
             plt.figure()
-            plt.plot(moving_average(total_attacker_rewards[1:episode]), linewidth=0.9, color='mediumvioletred', label="Score")
-            plt.plot(moving_average(reconnaissance_rewards[1:episode]), linewidth=0.9, color='blue', label='Reconnaissance score')
-            plt.plot(moving_average(cyber_attack_rewards[1:episode]), linewidth=0.9, color='orange', label="Cyberattack score")
-            plt.plot(moving_average(disinfo_rewards[1:episode]), linewidth=0.9, color='green', label="Disinformation score")
-            plt.plot(moving_average(termination_rewards[1:episode]), linewidth=0.9, color='gray', label='Termination score')
+            plt.plot(moving_average(total_attacker_rewards[1:episode+1]), linewidth=0.9, color='mediumvioletred', label="Score")
+            plt.plot(moving_average(reconnaissance_rewards[1:episode+1]), linewidth=0.9, color='blue', label='Reconnaissance score')
+            plt.plot(moving_average(cyber_attack_rewards[1:episode+1]), linewidth=0.9, color='orange', label="Cyberattack score")
+            plt.plot(moving_average(disinfo_rewards[1:episode+1]), linewidth=0.9, color='green', label="Disinformation score")
+            plt.plot(moving_average(termination_rewards[1:episode+1]), linewidth=0.9, color='gray', label='Termination score')
             plt.xlabel("Episodes")
             plt.ylabel("Cumulative reward\nfor attackers")
             plt.grid()
@@ -343,15 +341,15 @@ def objective(trial):
 
             # Figure 5.1/5.2/5.3: Attacker loss
             fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(23, 4))
-            ax[0].plot(moving_average(loss1_history[1:episode]), linewidth=0.9, color = 'mediumvioletred')
+            ax[0].plot(moving_average(loss1_history[1:episode+1]), linewidth=0.9, color = 'mediumvioletred')
             ax[0].set_xlabel("Episodes")
             ax[0].set_ylabel("Loss (attack stage)")
             ax[0].grid()
-            ax[1].plot(moving_average(loss2_history[1:episode]), linewidth=0.9, color = 'orange')
+            ax[1].plot(moving_average(loss2_history[1:episode+1]), linewidth=0.9, color = 'orange')
             ax[1].set_xlabel("Episodes")
             ax[1].set_ylabel("Loss (cyberattack)")
             ax[1].grid()
-            ax[2].plot(moving_average(loss3_history[1:episode]), linewidth=0.9, color = 'green')
+            ax[2].plot(moving_average(loss3_history[1:episode+1]), linewidth=0.9, color = 'green')
             ax[2].set_xlabel("Episodes")
             ax[2].set_ylabel("Loss (disinfo)")
             ax[2].grid()
@@ -361,11 +359,11 @@ def objective(trial):
 
             # Figure 6: Regular agents rewards
             plt.figure()
-            plt.plot(moving_average(regagent_total_rewards[1:episode]), linewidth=0.9, color = 'mediumvioletred', label = "Mean score")
-            plt.plot(moving_average(regagent_action_rewards[1:episode]), linewidth=0.9, color = 'red', label = "Mean service score")
-            plt.plot(moving_average(regagent_opinion_rewards[1:episode]), linewidth=0.9, color = 'orange', label = "Mean feedback score")
-            plt.xlabel("Episodes")
-            plt.ylabel("Cumulative reward\nfor regular agents")
+            plt.plot(regagent_total_rewards[1:episode], linewidth=0.9, color = 'mediumvioletred', label = "Cumulative reward")
+            plt.plot(regagent_action_rewards[1:episode], linewidth=0.9, color = 'red', label = "Service reward")
+            plt.plot(regagent_opinion_rewards[1:episode], linewidth=0.9, color = 'orange', label = "Feedback reward")
+            plt.xlabel("Episode")
+            plt.ylabel("Cumulative reward\nfor regular agents per episode")
             plt.grid()
             plt.legend(loc=(0.01,0.50), fontsize='x-small')
             if save_fig:
@@ -373,9 +371,11 @@ def objective(trial):
                 plt.clf()
 
             # Figure 7: Visualise social trust in service providers
+            colors = cm.tab10(np.arange(nProviders))
             plt.figure()
             for sp in range(nProviders):
-                plt.plot(moving_average(social_trust_history[1:episode, sp]), linewidth=0.9, label = "Provider  {}".format(sp+1))
+                plt.plot(social_trust_history[1:episode, sp], color=colors[sp], linewidth=0.9, label = "Provider  {}".format(sp+1))
+            plt.ylim(0,1)
             plt.xlabel("Episode")
             plt.ylabel("Average social trust\nin service providers per episode")
             plt.grid()
@@ -383,7 +383,7 @@ def objective(trial):
             if save_fig:
                 plt.savefig(os.path.join(save_figures_path, f'ch{chapter}-hp-tuning-exp{experiment}-{date}-{seed}-trust.png'))
                 plt.clf()
-            #plt.show()
+            plt.show()
             
     # Calculate the mean of the stabilised rewards/loss for attackers
     stabilised_episodes = number_of_episodes - beta_decay
