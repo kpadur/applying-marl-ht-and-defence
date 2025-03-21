@@ -16,8 +16,6 @@ applying-marl-ht-and-defence/
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
 ├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
-├── sa-param-values.py               # Generate parameter sets for the sensitivity analysis using Sobol's method
-├── sa-results-analysis.py           # Analyse the results of the sensitivity analysis using Sobol's method
 ├── data                             # Folder containing data and R scripts for hyperparameter tuning
     ├── hyperparameters.csv          # (Tuned) hyperparameter values
     └── parameters.csv               # Parameter values
@@ -33,6 +31,8 @@ applying-marl-ht-and-defence/
     ├── ch4-exp1-analysis.R          # R script for analysing and visualising experiment 1 data
     ├── ch4-exp2-attack-analysis.R   # R script for analysing and visualising attacker behaviour
     └── ch4-exp2-defence-analysis.R  # R script for analysing and visualising defender behaviour
+├── sensitivity-analysis             # Folder containing data and R scripts for hyperparameter tuning
+    └── sa-param-values.py           # Generate parameter sets for the sensitivity analysis using Sobol's method
 ├── LICENSE.md                       # License
 └── README.md                        # Project documentation
 ```
