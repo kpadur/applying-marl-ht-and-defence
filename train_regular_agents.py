@@ -327,9 +327,9 @@ if save_nns:
         torch.save({
             'actions_state_dict': agent.action_nn.state_dict(),
             'actions_opt_state_dict': agent.action_opt.state_dict(),
-        }, f'{agent_name}_checkpoint_actions_{date}_{seed}.pth')
+        }, f'{agent_name}_checkpoint_actions.pth')
 
         torch.save({
             'opinions_state_dict': agent.opinion_nn.state_dict(),
             'opinions_opt_state_dict': agent.opinion_opt.state_dict(),
-        }, f'{agent_name}_checkpoint_opinions_{date}_{seed}.pth')
+        }, f'{agent_name}_checkpoint_opinions.pth')
