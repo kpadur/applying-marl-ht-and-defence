@@ -8,7 +8,7 @@ library(png)
 
 # Exp1: Regular agents' behaviour in the environment
 #####
-data <- read.xlsx("/Users/kartpadur/Documents/GitHub/pytorch_project/ch4-marl/hyperparameter_tuning/ch4-exp1-hp-tuning.xlsx") # Exp1
+data <- read.xlsx("ch4-exp1-hp-tuning.xlsx")
 # Visualise hyperparameter tuning information
 dev.off()
 
@@ -45,13 +45,11 @@ text(x[max_index] + 0.055 * (max(x) - min(x)), max_value, labels=round(max_value
 screen(my_screen_step1[2])
 hist(y, border=F , col="#FFCC66" , main="" ,  xlab="Distribution of rewards")
 # Add "B" to the top-left corner
-mtext("B", side=3, line=0, adj=0, cex=1.5) 
-
-# Saved as /plots/hp-tuning-exp1.pdf with size of 8.00 x 8.50 (portrait)
+mtext("B", side=3, line=0, adj=0, cex=1.5)
 
 #####
 # Exp2: Attackers' and defenders' behaviour in the environment
-data <- read.xlsx("/Users/kartpadur/Documents/GitHub/pytorch_project/ch4-marl/hyperparameter_tuning/ch4-exp2-hp-tuning.xlsx") # Exp2
+data <- read.xlsx("ch4-exp2-hp-tuning.xlsx")
 
 # Attackers
 # Visualise hyperparameter tuning information
@@ -91,8 +89,6 @@ screen(my_screen_step1[2])
 hist(y, border=F , col="#FF0000" , main="" ,  xlab="Distribution of rewards")
 # Add "D" to the top-left corner
 mtext("D", side=3, line=0, adj=0, cex=1.5)
-
-# Saved as /plots/ch4-exp2-hp-tuning-attackers.pdf with size of 8 x 8.5 (portrait)
 
 # Defenders
 # Visualise hyperparameter tuning information
@@ -207,5 +203,3 @@ par(mar = c(5, 6, 4, 2) + 0.1)  # Increase the second value to increase the left
 hist(y3, border=F , col="#006633" , main="" ,  xlab="Distribution of rewards")
 mtext("J", side=3, line=0, adj=0, cex=1.5)
 par(old_par)
-
-# Saved as /plots/ch4-exp2-hp-tuning-defenders.pdf with size of 8 x 12.75 (landscape)
