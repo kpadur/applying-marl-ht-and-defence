@@ -17,6 +17,7 @@ import datetime
 import csv
 import optuna
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from IPython.display import clear_output
 
 # %% [markdown]
@@ -28,8 +29,8 @@ chapter = 4
 
 # %% [markdown]
 # Specify output directory
-save_data_path = os.path.join("hyperparameter_tuning", "exp1-results")
-save_figures_path = os.path.join("hyperparameter_tuning", "exp1-figures")
+save_data_path = os.path.join("hyperparameter-tuning", "exp1-results")
+save_figures_path = os.path.join("hyperparameter-tuning", "exp1-figures")
 
 # %% [markdown]
 # Define the objective function
@@ -50,7 +51,7 @@ def objective(trial):
     beta_decay = trial.suggest_int('beta_decay', 1e+2, 3e+2)
 
     # Initialise social network, cyber-physical system, and agent parameters
-    df = pd.read_csv("parameters.csv")
+    df = pd.read_csv("data/parameters.csv")
     parameters = dict(zip(df['parameter'], df['value']))
 
     # Social network parameters
@@ -66,7 +67,7 @@ def objective(trial):
 
     # Agents' attributes (parameters)
     direct_exp_weight = parameters['direct_exp_weight']
-    satisfaction_threshold = parameters['satisfaction_threshold']
+    feedback_adj_rate = parameters['feedback_adj_rate']
     forgetting_factor = parameters['forgetting_factor']
 
     # Define training time
@@ -76,7 +77,7 @@ def objective(trial):
     save_fig = False
 
     # Seed everything
-    seed = 5282
+    seed = 0
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -84,9 +85,9 @@ def objective(trial):
         torch.cuda.manual_seed_all(seed)
 
     # Create environment
-    env = Environment(nRegAgents, nMalAgents, nProviders, 
+    env = Environment(nRegAgents, nProviders, 
                         kappa, rho, center_up_to_down, center_down_to_up, end_up_to_down, end_down_to_up, cost,
-                        direct_exp_weight, satisfaction_threshold, forgetting_factor)
+                        direct_exp_weight, feedback_adj_rate, forgetting_factor)
 
     # Pick one agent randomly from each type of agents
     regagent_example = np.random.choice(env.regagents)
@@ -153,14 +154,12 @@ def objective(trial):
         action_rewards[episode] = service
         opinion_rewards[episode] = feedback
         # Process social trust
-        episode_states_pd = process_regagent_states_average(all_observations, env.providers, episode, n_steps)
-        social_trust_history[episode][0] = episode_states_pd["trust_in_sp0"].mean()
-        social_trust_history[episode][1] = episode_states_pd["trust_in_sp1"].mean()
-        social_trust_history[episode][2] = episode_states_pd["trust_in_sp2"].mean()
+        mean_trust_values = process_regagent_states_average(all_observations, env.providers, n_steps)
+        social_trust_history[episode] = mean_trust_values
          # Processing regagent actions and opinions
-        _, regagent_action_counts, regagent_opinion_counts = process_regagent_actions(all_actions, env.regagents, episode, n_steps)
-        actions_history[episode] = regagent_action_counts # add occurrences of each action (as %)
-        opinions_history[episode] = regagent_opinion_counts # add occurrences of each opinion (as %)
+        mean_selection_rate, mean_expression_rate = process_regagent_actions(all_actions, env.providers, n_steps)
+        actions_history[episode] = mean_selection_rate # add occurrences of each action (as %)
+        opinions_history[episode] = mean_expression_rate # add occurrences of each opinion (as %)
 
         # Calculate episode mean loss over all agents
         loss1_history[episode] = np.mean(loss1_agents[episode]) # mean loss for actions
@@ -184,9 +183,10 @@ def objective(trial):
                 plt.clf()
 
             # Plot 2: Visualise social trust in service providers
+            colors = cm.tab10(np.arange(nProviders))
             plt.figure()
-            for prov in range(nProviders):
-                plt.plot(social_trust_history[1:episode, prov], linewidth=0.9, label = "Provider  {}".format(prov+1))
+            for sp in range(nProviders):
+                plt.plot(social_trust_history[1:episode, sp], color=colors[sp], linewidth=0.9, label = "Provider  {}".format(sp+1))
             plt.xlabel("Episode")
             plt.ylabel("Average social trust\nin service providers per episode")
             plt.grid()
@@ -196,37 +196,27 @@ def objective(trial):
                 plt.clf()
 
             # Plot 3.1: Visualise service requests rate (%) per episode
-            fig, axe = plt.subplots(nrows=1, ncols=2, figsize=(15, 4))
+            fig, axe = plt.subplots(nrows = 1, ncols = 2, figsize = (15,4))
             for sp in range(nProviders):
-                axe[0].plot(actions_history[1:episode, sp], linewidth=0.9, label = "Provider  {}".format(sp+1))
+                axe[0].plot(actions_history[1:episode, sp], color=colors[sp], linewidth = 0.9,
+                    label = "Providers {}".format(sp+1))
             axe[0].set_ylim(0,100)
             axe[0].set_xlabel("Episode")
             axe[0].set_ylabel("Average service request rate\nper episode")
             axe[0].grid()
-            axe[0].legend(loc=(0.01,0.50), fontsize='x-small')
-            # Plot 3.2: Visualise average opinion expression rate (%) per episode
+            axe[0].legend(loc=(0.01, 0.50), fontsize='x-small')
+            # Plot 4.2: Visualise opinion expression rate (%) per episode
             for o in range(nProviders*2):
-                if o in [0]:
-                    axe[1].plot(opinions_history[1:episode, o], "--", color = 'tab:blue', linewidth=0.9, label = "Provider  {} -".format(o+1))
-                elif o in [1]:
-                    axe[1].plot(opinions_history[1:episode, o], "-", color = 'tab:blue', linewidth=0.9, label = "Provider  {} +".format(o))
-                elif o in [2]:
-                    axe[1].plot(opinions_history[1:episode, o], "--", color = 'tab:orange', linewidth=0.9, label = "Provider  {} -".format(o))
-                elif o in [3]:
-                    axe[1].plot(opinions_history[1:episode, o], "-", color = 'tab:orange', linewidth=0.9, label = "Provider  {} +".format(o-1))
-                elif o in [4]:
-                    axe[1].plot(opinions_history[1:episode, o], "--", color = 'tab:green', linewidth=0.9, label = "Provider  {} -".format(o-1))
-                elif o in [5]:
-                    axe[1].plot(opinions_history[1:episode, o], "-", color = 'tab:green', linewidth=0.9, label = "Provider  {} +".format(o-2))
-                elif o in [6]:
-                    axe[1].plot(opinions_history[1:episode, o], "--", color = 'tab:red', linewidth=0.9, label = "Provider  {} -".format(o-2))
-                else:
-                    axe[1].plot(opinions_history[1:episode, o], "-", color = 'tab:red', linewidth=0.9, label = "Provider  {} +".format(o-3))
+                provider_index = o // 2  # Determine which provider this opinion corresponds to
+                opinion_type = "Negative" if o % 2 == 0 else "Positive"  # Alternate between negative and positive
+                linestyle = "--" if o % 2 == 0 else "-"  # Negative: dashed, Positive: solid
+                axe[1].plot(opinions_history[1:episode, o], linestyle, color=colors[provider_index], linewidth=0.9,
+                    label=f"{opinion_type} opinion on provider {provider_index + 1}")
             axe[1].set_ylim(0,100)
             axe[1].set_xlabel("Episode")
             axe[1].set_ylabel("Average opinion expression rate\nper episode")
             axe[1].grid()
-            axe[1].legend(loc=(0.01,0.50), fontsize='x-small')
+            axe[1].legend(loc=(0.01, 0.50), fontsize='x-small')
             if save_fig:
                 plt.savefig(os.path.join(save_figures_path, f'ch{chapter}-hp-tuning-exp{experiment}-{date}-{seed}-actions-opinions.png'))
                 plt.clf()
@@ -278,7 +268,7 @@ if __name__ == "__main__":
     # Connect to SQLite3 database (Optuna will create this if it doesn't exist)
     storage_name = "sqlite:///db.sqlite3"
     study_name = f'ch{chapter}-hp-tuning-exp{experiment}-{date}'
-    direction = ['minimize']
+    direction = 'minimize'
     study = optuna.create_study(study_name=study_name, storage=storage_name, direction=direction, load_if_exists=True)
     n_trials = 1
     study.optimize(objective, n_trials=n_trials)
