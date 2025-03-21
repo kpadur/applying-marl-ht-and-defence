@@ -159,7 +159,6 @@ for episode in range(1, number_of_episodes + 1):
     for timestep in range(1, n_steps + 1): # one episode
 
         actions = {}  # Dictionary to store the current timestep's actions
-        episode_opinion_probs = np.zeros(len(providers)*2)
         
         for agent_name, agent in regular_agents.items():
             state = observations[agent_name]
