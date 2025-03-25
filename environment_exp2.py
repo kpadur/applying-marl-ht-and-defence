@@ -817,10 +817,9 @@ class Environment(AECEnv):
             # Check if contacted agent takes service from attacked provider
             if agent_name in contacted_agents:
                 agent = int(agent_name.replace("regagent", "")) # contact id
-                # provider_name = f'defagent{provider}' # agents service provider
-                if opinion == self.misinfo_opinion  or opinion == self.misinfo_alt_opinion or \
+                if opinion == self.misinfo_opinion or opinion == self.misinfo_alt_opinion or \
                         (provider == self.attacked_provider and agent in self.dos_agents) or\
-                            (provider == self.attacked_provider and  actions[f"defagent{provider}"][0][agent] == 1):
+                            (provider == self.attacked_provider and actions[f"defagent{provider}"][0][agent] == 1):
                     action = self.mcontacts_dict[agent] # action id corresponding to contact id
                     action_rewards[action] = 10.0
         # Consider cost of all actions (= number of malicious agents)
