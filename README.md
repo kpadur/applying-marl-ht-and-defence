@@ -4,32 +4,36 @@ The threat landscape continues to evolve, with attackers using more advanced too
 ## Project structure
 ```
 applying-marl-ht-and-defence/
-├── train_regular_agents.py          # Experiment for training regular agents (experiment 1)
-├── train_marl.py                    # Experiment for training attackers and defenders (experiment 2)
-├── environment_exp1.py              # Environment setup for experiment 1
-├── environment_exp2.py              # Environment setup for experiment 2
+├── hyperparameter-tuning            # Folder containing data and R scripts for hyperparameter tuning
+    ├── exp1-hp-tuning.xlsx          # Data on hyperparameter tuning for experiment 1
+    ├── exp2-hp-tuning.xlsx          # Data on hyperparameter tuning for experiment 2
+    └── hp-tuning-vis.R              # R script for visualising hyperparameter tuning results (both experiments)
+├── parameters                       # Folder containing data and R scripts for hyperparameter tuning
+    ├── hyperparameters.csv          # (Tuned) hyperparameter values
+    └── parameters.csv               # Parameter values
+├── regagent-parameters              # Folder contraining trained neural networks for regular agents
+├── results                          # Folder containing R scripts for results analysis and visualisation
+    ├── exp1-results                 # Folder containing example data from experiment 1
+    ├── exp2-results                 # Folder containing example data from experiment 2
+    ├── exp1-analysis.R              # R script for analysing and visualising experiment 1 data
+    ├── exp2-attack-analysis.R       # R script for analysing and visualising attacker behaviour
+    └── exp2-defence-analysis.R      # R script for analysing and visualising defender behaviour
+├── sensitivity-analysis             # Folder containing data and R scripts for hyperparameter tuning
+    ├── exp1-sa-data.csv             # Data on sobol sensitivity analysis results
+    ├── exp1-sa-results.xlsx         # Data with sobol and regression analysis results
+    └── sa-param-values.py           # Generate parameter sets for the sensitivity analysis using Sobol's method
 ├── a2c_agent.py                     # Regular agents' behaviour in the environment
 ├── a2c_def_agent.py                 # Defenders' behaviour in the environment
 ├── a2c_mal_agent.py                 # Attackers' behaviour in the environment
-├── nns.py                           # Architecture of deep neural networks
 ├── data_analysis.py                 # Functions to analyse training data
+├── environment_exp1.py              # Environment setup for experiment 1
+├── environment_exp2.py              # Environment setup for experiment 2
 ├── exp1-hp-tuning.py                # Hyperparameter tuning for experiment 1
-├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
 ├── exp1-sa.py                       # Sensitivity analysis for experiment 1
-├── data                             # Folder containing data and R scripts for hyperparameter tuning
-    ├── hyperparameters.csv          # (Tuned) hyperparameter values
-    └── parameters.csv               # Parameter values
-├── hyperparameter-tuning            # Folder containing data and R scripts for hyperparameter tuning
-    ├── ch4-exp1-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 1
-    ├── ch4-exp2-hp-tuning.xlsx      # Data on hyperparameter tuning for experiment 2
-    └── ch4-hp-tuning-vis.R          # R script for visualising hyperparameter tuning results (both experiments)
-├── regagent-parameters              # Folder contraining trained neural networks for regular agents
-├── results                          # Folder containing R scripts for results analysis and visualisation
-    ├── ch4-exp1-analysis.R          # R script for analysing and visualising experiment 1 data
-    ├── ch4-exp2-attack-analysis.R   # R script for analysing and visualising attacker behaviour
-    └── ch4-exp2-defence-analysis.R  # R script for analysing and visualising defender behaviour
-├── sensitivity-analysis             # Folder containing data and R scripts for hyperparameter tuning
-    └── sa-param-values.py           # Generate parameter sets for the sensitivity analysis using Sobol's method
+├── exp2-hp-tuning.py                # Hyperparameter tuning for experiment 2
+├── nns.py                           # Architecture of deep neural networks
+├── train_regular_agents.py          # Experiment for training regular agents (experiment 1)
+├── train_marl.py                    # Experiment for training attackers and defenders (experiment 2)
 ├── LICENSE.md                       # License
 └── README.md                        # Project documentation
 ```
@@ -61,3 +65,17 @@ The following R libraries are required:
 - dplyr (version 1.1.3 or higher)
 - tidyr (version 1.3.0 or higher)
 ```
+## Run experiments
+```
+# Run experiment 1
+python train_regular_agents.py
+# Run experiment 2
+python train_marl.py
+```
+## Results
+Results will be saved to ```/results``` directory. Experiment 1 results are located in ```/results/exp1-results``` and experiment 2 results are located in ```/results/exp2-results```.
+
+Directory ```/regagent-parameters``` contains trained deep neural networks from experiment 1 that are used in experiment 2.
+
+## Contact
+For any questions or issues, please feel free to contact [kart.padur.20@ucl.ac.uk] and I will be happy to assist.
