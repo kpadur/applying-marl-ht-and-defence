@@ -322,13 +322,15 @@ save_data_to_csv(file_path, data_dict)
 # %% [markdown]
 # Save models
 if save_nns:
+    os.makedirs(nn_path, exist_ok=True)  # Ensure the folder exists
+
     for agent_name, agent in regular_agents.items():
         torch.save({
             'actions_state_dict': agent.action_nn.state_dict(),
             'actions_opt_state_dict': agent.action_opt.state_dict(),
-        }, f'{agent_name}_checkpoint_actions.pth')
+        }, os.path.join(nn_path, f'{agent_name}_checkpoint_actions.pth'))
 
         torch.save({
             'opinions_state_dict': agent.opinion_nn.state_dict(),
             'opinions_opt_state_dict': agent.opinion_opt.state_dict(),
-        }, f'{agent_name}_checkpoint_opinions.pth')
+        }, os.path.join(nn_path, f'{agent_name}_checkpoint_opinions.pth'))
