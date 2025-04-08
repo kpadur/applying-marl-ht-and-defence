@@ -274,8 +274,8 @@ p2 <- ggplot() +
                                 "Service provider 2" = "#FF9900",
                                 "Service provider 3" = "#006633")) +
   labs(x = "Episode", y = "Average service provider social trust rate\n(across 100 simulations)", color = NULL) +
-  scale_x_continuous(limits = c(0, 500)) +  # Set explicit limits for x-axis
-  scale_y_continuous(limits = c(0, 1)) +  # Set explicit limits for y-axis
+  scale_x_continuous(limits = c(0, 500)) + 
+  scale_y_continuous(limits = c(0, 1)) +
   theme_bw()+
   theme(
     legend.position = c(0.80, 0.40),
@@ -360,8 +360,8 @@ p3 <- ggplot() +
                                 "Service provider 2" = "#FF9900",
                                 "Service provider 3" = "#006633")) +
   labs(x = "Episode", y = "Average service request rate\n(across 100 simulations)", color = NULL) +
-  scale_x_continuous(limits = c(0, 500)) +  # Set explicit limits for x-axis
-  scale_y_continuous(limits = c(0, 100)) +  # Set explicit limits for y-axis
+  scale_x_continuous(limits = c(0, 500)) +
+  scale_y_continuous(limits = c(0, 100)) +
   theme_bw()+
   theme(
     legend.position = c(0.80, 0.65),
@@ -620,7 +620,9 @@ p5 <- ggplot() +
     axis.title.x = element_text(vjust = -1),
     axis.title.y = element_text(vjust = 1),
     legend.background = element_blank(),
-    legend.key = element_blank()
+    legend.key = element_blank(),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.5), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5)
   )
 p5
 
@@ -684,6 +686,8 @@ p6 <- ggplot() +
     axis.title.x = element_text(vjust = -1),
     axis.title.y = element_text(vjust = 1),
     legend.background = element_blank(),
-    legend.key = element_blank()
+    legend.key = element_blank(),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.5), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5)
   )
 p6
