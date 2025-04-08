@@ -21,7 +21,7 @@ import datetime
 
 # %% [markdown]
 # Setup device, date, chapter, and experiment
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # currently cpu
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # cpu
 date = datetime.datetime.now().strftime("%Y-%m-%d")
 chapter = 4
 experiment = 1
