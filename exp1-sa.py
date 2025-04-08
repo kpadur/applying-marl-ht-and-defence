@@ -25,7 +25,7 @@ experiment = 1
 
 # %% [markdown]
 # Specify output directory
-save_data_path = os.path.join("sensitivity-analysis", "exp1-results")
+save_data_path = os.path.join("sensitivity-analysis")
 get_nn_path = os.path.join("regagent-parameters")
 param_values_path = os.path.join("sensitivity-analysis", "param-values")
 
@@ -33,7 +33,7 @@ param_values_path = os.path.join("sensitivity-analysis", "param-values")
 # Sensitivity analysis function
 def sensitivity_analysis(trial_params):
     # Set hyperparameters (use trained agents)
-    df = pd.read_csv("data/hyperparameters.csv")
+    df = pd.read_csv("parameters/hyperparameters.csv")
     hyperparameters = dict(zip(df['hyperparameter'], df['value']))
 
     alpha_rnn1 = hyperparameters['alpha_1']
@@ -69,7 +69,7 @@ def sensitivity_analysis(trial_params):
     feedback_adj_rate = trial_params[8]
     forgetting_factor = trial_params[9]
     print("Running experiment with the following parameters: kappa", kappa, "rho", rho, "center_up_to_down", center_up_to_down, "center_down_to_up", center_down_to_up, "end_up_to_down",
-          end_up_to_down, "end_down_to_up", end_down_to_up, "cost", cost, "direct_exp_weight", direct_exp_weight, "satisfaction_threshold", feedback_adj_rate, "forgetting_factor", forgetting_factor)
+          end_up_to_down, "end_down_to_up", end_down_to_up, "cost", cost, "direct_exp_weight", direct_exp_weight, "feedback_adj_rate", feedback_adj_rate, "forgetting_factor", forgetting_factor)
    
     # Create environment
     env = Environment(nRegAgents, nProviders, 
