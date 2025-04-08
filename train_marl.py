@@ -24,7 +24,7 @@ import matplotlib.cm as cm
 
 # %% [markdown]
 # Setup device, date, chapter, and experiment
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # currently cpu
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # cpu
 date = datetime.datetime.now().strftime("%Y-%m-%d")
 chapter = 4
 experiment = 2
@@ -41,7 +41,7 @@ nMalAgents = 10
 
 # %% [markdown]
 # Initialise (tuned) hyperparameters
-hyperparameters = read_csv_to_dict("data/hyperparameters.csv")
+hyperparameters = read_csv_to_dict("parameters/hyperparameters.csv")
 
 alpha_rnn1 = hyperparameters['alpha_1']
 alpha_rnn2 = hyperparameters['alpha_2']
@@ -61,7 +61,7 @@ beta_decay = int(hyperparameters['n_2'])
 
 # %% [markdown]
 # Initialise social network, cyber-physical system, and agent parameters
-parameters = read_csv_to_dict("data/parameters.csv")
+parameters = read_csv_to_dict("parameters/parameters.csv")
 
 # Social network parameters
 kappa = int(parameters['kappa'])
@@ -81,10 +81,10 @@ forgetting_factor = parameters['forgetting_factor']
 
 # %% [markdown]
 # Define training time, visualisation and saving frequency
-n_steps = 100 # number of steps per episode
+n_steps = 100 # number of timesteps per episode
 number_of_episodes = 20000
 eval_freq = 100
-vis_freq = 100 # change!
+vis_freq = 100
 saving_freq = 1000
 save_fig = False
 save_nns = False
@@ -249,12 +249,12 @@ for episode in range(1, number_of_episodes + 1):
         observations, rewards, _, _, _ = env.step(actions)
 
         # Render environment
-        if timestep % 10 == 0: # and episode != 1 and episode % saving_freq == 0:
+        if timestep % 10 == 0:
             clear_output(wait=True)  # Clear the previous output
             fig = env.render(graph_type='both')  # Render the graph for the current timestep
-            fig.text(0.01, 0.90, f'Episode: {episode}', ha='left', fontsize=14, color='black') # Add dynamic text (episode and timestep) to the figure
-            fig.text(0.01, 0.86, f'Timestep: {timestep}', ha='left', fontsize=14, color='black') # Add dynamic text (episode and timestep) to the figure
-            plt.show()  # Display the new figure
+            fig.text(0.01, 0.90, f'Episode: {episode}', ha='left', fontsize=14, color='black')
+            fig.text(0.01, 0.86, f'Timestep: {timestep}', ha='left', fontsize=14, color='black')
+            plt.show()
             if save_fig:
                 fig.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{seed}-{episode}-{timestep}-environment.png'))
                 plt.clf()
@@ -274,7 +274,7 @@ for episode in range(1, number_of_episodes + 1):
                     all_observations[agent_name].append(observations[agent_name])
                     all_actions[agent_name].append(actions[agent_name])
                     episode_rewards[agent_name].append(rewards[agent_name])
-        # attackers
+        # Attackers
         all_observations["malagent"].append(observations["malagent"])
         all_actions["malagent"].append(actions["malagent"])
         episode_rewards["malagent"].append(rewards["malagent"])
@@ -290,12 +290,12 @@ for episode in range(1, number_of_episodes + 1):
     social_trust_history[episode] = mean_trust_values
     # Processing regagent actions and opinions
     mean_selection_rate, mean_expression_rate = process_regagent_actions(all_actions, providers, n_steps)
-    regagent_actions_history[episode] = mean_selection_rate # add occurrences of each action (as %)
-    regagent_opinions_history[episode] = mean_expression_rate # add occurrences of each opinion (as %)
+    regagent_actions_history[episode] = mean_selection_rate
+    regagent_opinions_history[episode] = mean_expression_rate
     # Process service provider availability
     sp_availability_episode = process_service_provider_availability(all_actions, providers, sum_sp_availability)
     sp_availability_history[episode] = sp_availability_episode
-    sum_sp_availability = np.zeros(len(providers), dtype=int) # reset count to zero
+    sum_sp_availability = np.zeros(len(providers), dtype=int)
     
     # Attackers compute A2C loss (and backpropagate)
     for agent_name, agent in malicious_agent.items():
@@ -315,10 +315,10 @@ for episode in range(1, number_of_episodes + 1):
 
     # Process attacker actions
     bot_counts, disinfo_counts, episode_attack_order, episode_count_actions_per_stage = process_attacker_actions(all_actions, n_cyber_actions, n_disinfo_actions)
-    cyber_actions_history[episode] = bot_counts # [0 0 0 ..] for every potential bot size
-    contacts_history[episode] = disinfo_counts # [0 0 1 0 ...] for every contacted agent
-    attack_order[episode] = episode_attack_order # store attack order
-    count_timesteps_per_stage[episode] = episode_count_actions_per_stage # store time in each stage
+    cyber_actions_history[episode] = bot_counts
+    contacts_history[episode] = disinfo_counts
+    attack_order[episode] = episode_attack_order
+    count_timesteps_per_stage[episode] = episode_count_actions_per_stage
 
     # Defenders compute A2C loss (and backpropagate)
     for agent_name, agent in service_providers.items():
