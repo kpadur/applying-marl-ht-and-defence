@@ -8,7 +8,7 @@ library(png)
 
 # Exp1: Regular agents' behaviour in the environment
 #####
-data <- read.xlsx("ch4-exp1-hp-tuning.xlsx")
+data <- read.xlsx("exp1-hp-tuning.xlsx")
 # Visualise hyperparameter tuning information
 dev.off()
 
@@ -49,7 +49,7 @@ mtext("B", side=3, line=0, adj=0, cex=1.5)
 
 #####
 # Exp2: Attackers' and defenders' behaviour in the environment
-data <- read.xlsx("ch4-exp2-hp-tuning.xlsx")
+data <- read.xlsx("exp2-hp-tuning.xlsx")
 
 # Attackers
 # Visualise hyperparameter tuning information
