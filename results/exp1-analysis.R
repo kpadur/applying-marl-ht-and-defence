@@ -1,17 +1,13 @@
-# Applying multi-agent reinforcement learning to study hybrid threats and defensive countermeasures
 # Exp 1 data analysis and visualisation
 # Load libraries
 library(readr)
 library(ggplot2)
 library(cowplot)
 
-#####
-# Read all files and combine
 # Exp1
 path <- "exp1-results"
 all_files <- list.files(path, pattern = "*regagents-data.csv", full.names = TRUE)
 
-#####
 # Calculate metrics (Exp1)
 stabilised_episode = 145
 number_of_episodes = 500
@@ -113,7 +109,7 @@ print(loss1_values)
 #####
 # Visualisation
 #####
-# Visualisation of rewards
+# Visualise rewards
 # Read 'total rewards' column from each file and combine
 total_reward_data <- lapply(all_files, function(file) {
   df <- read_csv(file,show_col_types = FALSE)
@@ -207,8 +203,6 @@ p1 <- ggplot() +
     panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5)
   )
 p1
-
-# Saved /ch4-marl/results/plots/ch4-exp1-rewards.pdf as 5 x 7.50 (landscape)
 
 # Visualise social trust
 # Social trust
@@ -524,8 +518,8 @@ p4 <- ggplot() +
                                    "Negative opinion on service provider 2" = "dashed", "Positive opinion on service provider 2" = "solid",
                                    "Negative opinion on service provider 3" = "dashed", "Positive opinion on service provider 3" = "solid")) +
   labs(x = "Episode", y = "Average opinion expression rate\n(across 100 simulations)", color = NULL, linetype = NULL, fill = NULL) +
-  scale_x_continuous(limits = c(0, 500)) +  # Set explicit limits for x-axis
-  scale_y_continuous(limits = c(0, 100)) +  # Set explicit limits for y-axis
+  scale_x_continuous(limits = c(0, 500)) + 
+  scale_y_continuous(limits = c(0, 100)) +
   theme_bw()+
   theme(
     legend.position = c(0.70, 0.75),
@@ -631,9 +625,7 @@ p5 <- ggplot() +
 p5
 
 combined_plot <- cowplot::plot_grid(p2, p3, p4, p1, labels = c("A", "B", "C", "D"))
-combined_plot <- cowplot::plot_grid(p1, p3, p4, labels = c("A", "B", "C"), nrow = 1)
 combined_plot
-# Save the combined plot 2 as 8 x 12.75 (landscape)
 
 # Visualise loss
 loss_1 <- lapply(all_files, function(file) {
