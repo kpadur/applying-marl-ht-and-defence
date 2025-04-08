@@ -1,4 +1,3 @@
-# Applying multi-agent reinforcement learning to study hybrid threats and defensive countermeasures
 # Exp 2 data analysis and visualisation
 
 # Load libraries
@@ -234,22 +233,22 @@ summary_total_rewards_data_sp3 <- data.frame(
 
 # Visualise defender rewards
 d1 <- ggplot() +
-  geom_line(data = summary_total_rewards_data_sp1, aes(x = episode, y = mean, color = "Mean score for service provider 1")) +
+  geom_line(data = summary_total_rewards_data_sp1, aes(x = episode, y = mean, color = "Average cumulative reward for service provider 1")) +
   geom_ribbon(data = summary_total_rewards_data_sp1, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#3366FF", alpha = 0.2) +
-  geom_line(data = summary_total_rewards_data_sp2, aes(x = episode, y = mean, color = "Mean score for service provider 2")) +
+  geom_line(data = summary_total_rewards_data_sp2, aes(x = episode, y = mean, color = "Average cumulative reward for service provider 2")) +
   geom_ribbon(data = summary_total_rewards_data_sp2, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#FFCC66", alpha = 0.2) +
-  geom_line(data = summary_total_rewards_data_sp3, aes(x = episode, y = mean, color = "Mean score for service provider 3")) +
+  geom_line(data = summary_total_rewards_data_sp3, aes(x = episode, y = mean, color = "Average cumulative reward for service provider 3")) +
   geom_ribbon(data = summary_total_rewards_data_sp3, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#339900", alpha = 0.2) +
-  scale_color_manual(values = c("Mean score for service provider 1" = "#0033CC", 
-                                "Mean score for service provider 2" = "#FF9900",
-                                "Mean score for service provider 3" = "#006633")) +
-  labs(x = "Episode", y = "Cumulative reward\nfor defenders", color = NULL) +
+  scale_color_manual(values = c("Average cumulative reward for service provider 1" = "#0033CC", 
+                                "Average cumulative reward for service provider 2" = "#FF9900",
+                                "Average cumulative reward for service provider 3" = "#006633")) +
+  labs(x = "Episode", y = "Average cumulative reward for defenders\n(across 100 simulations)", color = NULL) +
   theme_bw() +
   theme(
-    legend.position = c(0.80, 0.30),
+    legend.position = c(0.70, 0.30),
     plot.title = element_text(size = rel(1)),
     axis.title = element_text(size = rel(1)),
     axis.text = element_text(size = rel(1)),
@@ -259,14 +258,14 @@ d1 <- ggplot() +
     axis.title.x = element_text(vjust = -1),
     axis.title.y = element_text(vjust = 1),
     legend.background = element_blank(),
-    legend.key = element_blank()
+    legend.key = element_blank(),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.6), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5) 
   )
 d1
 
-# Saved ch4-exp2-defender-rewards.pdf as 5 x 7.50 (landscape)
 combined_plot_1 <- cowplot::plot_grid(a1, d1, labels = c("A", "B"), ncol = 1) 
 combined_plot_1
-# combined_plot_1 saved ch4-exp2-rewards as 10 x 7.50 (portrait)
 
 #####
 # Filtering rewards
@@ -366,7 +365,9 @@ p1 <- ggplot() +
     axis.title.x = element_text(vjust = -1),
     axis.title.y = element_text(vjust = 1),
     legend.background = element_blank(),
-    legend.key = element_blank()
+    legend.key = element_blank(),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.6), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5) 
   )
 p1
 
@@ -475,63 +476,6 @@ p2
 
 combined_plot <- cowplot::plot_grid(p1, p2, labels = c("C", "D"), ncol = 1) 
 combined_plot
-# Saved as 10 x 7.50 (portrait)
-
-#####
-# Filtering and replying rewards on one graph (doesn't look great)
-#####
-# Add new variable to the data frames
-summary_filter_rewards_data_sp1$Group <- "Filtering rewards provider 1"
-summary_reply_rewards_data_sp1$Group <- "Answering rewards provider 1"
-summary_filter_rewards_data_sp2$Group <- "Filtering rewards on provider 2"
-summary_reply_rewards_data_sp2$Group <- "Answering rewards on provider 2"
-summary_filter_rewards_data_sp3$Group <- "Filtering rewards on provider 3"
-summary_reply_rewards_data_sp3$Group <- "Answering rewards on provider 3"
-
-ggplot() +
-  geom_line(data = summary_filter_rewards_data_sp1, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_filter_rewards_data_sp1, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  geom_line(data = summary_filter_rewards_data_sp2, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_filter_rewards_data_sp2, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  geom_line(data = summary_filter_rewards_data_sp3, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_filter_rewards_data_sp3, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  geom_line(data = summary_reply_rewards_data_sp1, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_reply_rewards_data_sp1, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  geom_line(data = summary_reply_rewards_data_sp2, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_reply_rewards_data_sp2, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  geom_line(data = summary_reply_rewards_data_sp3, aes(x = episode, y = mean, color = Group, linetype = Group)) +
-  geom_ribbon(data = summary_reply_rewards_data_sp3, aes(x = episode, ymin = mean - sd, ymax = mean + sd, fill = Group), alpha = 0.1) +
-  
-  
-  scale_color_manual(values = c("Filtering rewards provider 1" = "#0033CC", "Answering rewards provider 1" = "#0033CC",
-                                "Filtering rewards on provider 2" = "#FF9900", "Answering rewards on provider 2" = "#FF9900",
-                                "Filtering rewards on provider 3" = "#006633", "Answering rewards on provider 3" = "#006633")) +
-  scale_fill_manual(values = c("Filtering rewards provider 1" = "#3366FF", "Answering rewards provider 1" = "#3366FF",
-                               "Filtering rewards on provider 2" = "#FFCC66", "Answering rewards on provider 2" = "#FFCC66",
-                               "Filtering rewards on provider 3" = "#339900", "Answering rewards on provider 3" = "#339900")) +
-  scale_linetype_manual(values = c("Filtering rewards provider 1" = "solid", "Answering rewards provider 1" = "dashed",
-                                   "Filtering rewards on provider 2" = "solid", "Answering rewards on provider 2" = "dashed",
-                                   "Filtering rewards on provider 3" = "solid", "Answering rewards on provider 3" = "dashed")) +
-  labs(x = "Episode", y = "Average cumulative reward\nfor filtering service requests\nand replying in the social network", color = NULL, linetype = NULL, fill = NULL) +
-  expand_limits(x = c(0, 350), y = c(0, 4000)) +
-  theme_minimal()+
-  theme(
-    legend.position = c(0.82, 0.47),
-    plot.title = element_text(size = rel(1.5)),
-    axis.title = element_text(size = rel(1.5)),
-    axis.text = element_text(size = rel(1.5)),
-    legend.title = element_text(size = rel(1.5)),
-    legend.text = element_text(size = rel(1)),
-    plot.margin = margin(1, 1, 1, 1, "cm"),
-    axis.title.x = element_text(vjust = -1),
-    axis.title.y = element_text(vjust = 1)
-  )
-
 #####
 # Loss 1
 #####
@@ -606,18 +550,18 @@ summary_loss1_data_sp3 <- data.frame(
 
 # Visualise defender loss
 ggplot() +
-  geom_line(data = summary_loss1_data_sp1, aes(x = episode, y = mean, color = "Provider 1")) +
+  geom_line(data = summary_loss1_data_sp1, aes(x = episode, y = mean, color = "Service provider 1")) +
   geom_ribbon(data = summary_loss1_data_sp1, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#3366FF", alpha = 0.2) +
-  geom_line(data = summary_loss1_data_sp2, aes(x = episode, y = mean, color = "Provider 2")) +
+  geom_line(data = summary_loss1_data_sp2, aes(x = episode, y = mean, color = "Service provider 2")) +
   geom_ribbon(data = summary_loss1_data_sp2, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#FFCC66", alpha = 0.2) +
-  geom_line(data = summary_loss1_data_sp3, aes(x = episode, y = mean, color = "Provider 3")) +
+  geom_line(data = summary_loss1_data_sp3, aes(x = episode, y = mean, color = "Service provider 3")) +
   geom_ribbon(data = summary_loss1_data_sp3, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#339900", alpha = 0.2) +
-  scale_color_manual(values = c("Provider 1" = "#0033CC", 
-                                "Provider 2" = "#FF9900",
-                                "Provider 3" = "#006633")) +
+  scale_color_manual(values = c("Service provider 1" = "#0033CC", 
+                                "Service provider 2" = "#FF9900",
+                                "Service provider 3" = "#006633")) +
   labs(x = "Episode", y = "Average loss for filtering", color = NULL) +
   expand_limits(x = c(10, 50), y = c(0, 80)) + # Should change
   theme_minimal()+
@@ -630,7 +574,9 @@ ggplot() +
     legend.text = element_text(size = rel(1)),
     plot.margin = margin(1, 1, 1, 1, "cm"),
     axis.title.x = element_text(vjust = -1),
-    axis.title.y = element_text(vjust = 1)
+    axis.title.y = element_text(vjust = 1),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.6), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5) 
   )
 
 #####
@@ -706,18 +652,18 @@ summary_loss2_data_sp3 <- data.frame(
 )
 # Visualise defender rewards
 ggplot() +
-  geom_line(data = summary_loss2_data_sp1, aes(x = episode, y = mean, color = "Provider 1")) +
+  geom_line(data = summary_loss2_data_sp1, aes(x = episode, y = mean, color = "Service provider 1")) +
   geom_ribbon(data = summary_loss2_data_sp1, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#3366FF", alpha = 0.2) +
-  geom_line(data = summary_loss2_data_sp2, aes(x = episode, y = mean, color = "Provider 2")) +
+  geom_line(data = summary_loss2_data_sp2, aes(x = episode, y = mean, color = "Service provider 2")) +
   geom_ribbon(data = summary_loss2_data_sp2, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#FFCC66", alpha = 0.2) +
-  geom_line(data = summary_loss2_data_sp3, aes(x = episode, y = mean, color = "Provider 3")) +
+  geom_line(data = summary_loss2_data_sp3, aes(x = episode, y = mean, color = "Service provider 3")) +
   geom_ribbon(data = summary_loss2_data_sp3, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#339900", alpha = 0.2) +
-  scale_color_manual(values = c("Provider 1" = "#0033CC", 
-                                "Provider 2" = "#FF9900",
-                                "Provider 3" = "#006633")) +
+  scale_color_manual(values = c("Service provider 1" = "#0033CC", 
+                                "Service provider 2" = "#FF9900",
+                                "Service provider 3" = "#006633")) +
   labs(x = "Episode", y = "Average loss for replying", color = NULL) +
   expand_limits(x = c(0, 350), y = c(-80, 10)) +
   theme_minimal()+
@@ -730,5 +676,7 @@ ggplot() +
     legend.text = element_text(size = rel(1)),
     plot.margin = margin(1, 1, 1, 1, "cm"),
     axis.title.x = element_text(vjust = -1),
-    axis.title.y = element_text(vjust = 1)
+    axis.title.y = element_text(vjust = 1),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.6), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5) 
   ) 
