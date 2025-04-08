@@ -1,4 +1,3 @@
-# Applying multi-agent reinforcement learning to study hybrid threats and defensive countermeasures
 # Exp 2 data analysis and visualisation
 
 # Load libraries
@@ -166,35 +165,34 @@ summary_term_rewards_data <- data.frame(
   variance = episode_variance_term_rewards
 )
 
-
 # Visualise rewards
 a1 <- ggplot() +
-  geom_line(data = summary_total_rewards_data, aes(x = episode, y = mean, color = "Mean score")) +
+  geom_line(data = summary_total_rewards_data, aes(x = episode, y = mean, color = "Rewards score")) +
   geom_ribbon(data = summary_total_rewards_data, aes(x = episode, ymin = mean - sd, ymax = mean + sd), 
               fill = "#FF99CC", alpha = 0.2) +
   
-  geom_line(data = summary_recon_rewards_data, aes(x = episode, y = mean, color = "Mean score for reconnaissance")) +
+  geom_line(data = summary_recon_rewards_data, aes(x = episode, y = mean, color = "Rewards for reconnaissance")) +
   geom_ribbon(data = summary_recon_rewards_data, aes(x = episode, ymin = mean - sd, ymax = mean + sd),
               fill = "#99CCFF", alpha = 0.2) +
   
-  geom_line(data = summary_cyber_rewards_data, aes(x = episode, y = mean, color = "Mean score for a cyberattack")) +
+  geom_line(data = summary_cyber_rewards_data, aes(x = episode, y = mean, color = "Rewards for a cyberattack")) +
   geom_ribbon(data = summary_cyber_rewards_data, aes(x = episode, ymin = mean - sd, ymax = mean + sd),
               fill = "#FFCC66", alpha = 0.2) +
   
-  geom_line(data = summary_disinfo_rewards_data, aes(x = episode, y = mean, color = "Mean score for disinformation")) +
+  geom_line(data = summary_disinfo_rewards_data, aes(x = episode, y = mean, color = "Rewards for disinformation")) +
   geom_ribbon(data = summary_disinfo_rewards_data, aes(x = episode, ymin = mean - sd, ymax = mean + sd),
               fill = "#CCFFCC", alpha = 0.2) +
   
-  geom_line(data = summary_term_rewards_data, aes(x = episode, y = mean, color = "Mean score for termination")) +
+  geom_line(data = summary_term_rewards_data, aes(x = episode, y = mean, color = "Rewards for termination")) +
   geom_ribbon(data = summary_term_rewards_data, aes(x = episode, ymin = mean - sd, ymax = mean + sd),
               fill = "#CCCCCC", alpha = 0.2) +
   
-  scale_color_manual(values = c("Mean score" = "#CC0033", 
-                                "Mean score for reconnaissance" = "#0033CC",
-                                "Mean score for a cyberattack" = "#FF9900",
-                                "Mean score for disinformation" = "#006633",
-                                "Mean score for termination" = "#666666")) +
-  labs(x = "Episode", y = "Cumulative reward\nfor attackers", color = NULL) +
+  scale_color_manual(values = c("Rewards score" = "#CC0033", 
+                                "Rewards for reconnaissance" = "#0033CC",
+                                "Rewards for a cyberattack" = "#FF9900",
+                                "Rewards for disinformation" = "#006633",
+                                "Rewards for termination" = "#666666")) +
+  labs(x = "Episode", y = "Average cumulative reward\nfor attackers\n(across 100 simulations)", color = NULL) +
   theme_bw() +
   theme(
     legend.position = c(0.20, 0.70),
@@ -207,11 +205,11 @@ a1 <- ggplot() +
     axis.title.x = element_text(vjust = -1),
     axis.title.y = element_text(vjust = 1),
     legend.background = element_blank(),
-    legend.key = element_blank()
+    legend.key = element_blank(),
+    panel.grid.major = element_line(color = "grey", linewidth = 0.6), 
+    panel.grid.minor = element_line(color = "lightgrey", linewidth = 0.5)
   )
 a1
-
-# Saved /ch4-marl/results/plots/ch4-exp2-attacker-rewards.pdf as 5 x 7.50 (landscape)
 
 #####
 # Attack strategy: Analyse order and count of time steps in each attack stage
@@ -280,4 +278,3 @@ strategy_avg_time <- all_data %>%
 
 # Combine the frequency and average times
 final_data <- left_join(strategy_freq, strategy_avg_time, by = "strategy")
-#write.csv(final_data, "attack-strategies-stabilised.csv", row.names = FALSE)
