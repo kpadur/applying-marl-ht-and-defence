@@ -39,7 +39,7 @@ nMalAgents = 0
 
 # %% [markdown]
 # Initialise (tuned) hyperparameters
-hyperparameters = read_csv_to_dict("data/hyperparameters.csv")
+hyperparameters = read_csv_to_dict("parameters/hyperparameters.csv")
 alpha_rnn1 = hyperparameters['alpha_1']
 alpha_rnn2 = hyperparameters['alpha_2']
 gamma_rnn1 = hyperparameters['gamma_1']
@@ -51,7 +51,7 @@ beta_decay = int(hyperparameters['n_1'])
 # %% [markdown]
 # Initialise social network, cyber-physical system, and agent parameters
 # Load parameters
-parameters = read_csv_to_dict("data/parameters.csv")
+parameters = read_csv_to_dict("parameters/parameters.csv")
 
 # Social network parameters
 kappa = int(parameters['kappa'])
@@ -71,7 +71,7 @@ forgetting_factor = parameters['forgetting_factor']
 
 # %% [markdown]
 # Define training time, visualisation and saving frequency
-n_steps = 500 # number of steps per episode
+n_steps = 500 # number of timesteps per episode
 number_of_episodes = 500 # number of episodes
 vis_freq = 10
 saving_freq = 10
@@ -179,9 +179,9 @@ for episode in range(1, number_of_episodes + 1):
         if episode in [1,100,500] and timestep == 500:
             clear_output(wait=True)  # Clear the previous output
             fig = env.render(graph_type='both')  # Render the graph for the current timestep
-            fig.text(0.01, 0.90, f'Episode: {episode}', ha='left', fontsize=14, color='black') # Add dynamic text (episode and timestep) to the figure
-            fig.text(0.01, 0.86, f'Timestep: {timestep}', ha='left', fontsize=14, color='black') # Add dynamic text (episode and timestep) to the figure
-            plt.show()  # Display the new figure
+            fig.text(0.01, 0.90, f'Episode: {episode}', ha='left', fontsize=14, color='black')
+            fig.text(0.01, 0.86, f'Timestep: {timestep}', ha='left', fontsize=14, color='black')
+            plt.show()
             if save_fig:
                 fig.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{seed}-{episode}-environment.png'))
                 plt.clf()
@@ -209,15 +209,15 @@ for episode in range(1, number_of_episodes + 1):
     social_trust_history[episode] = mean_trust_values
     # Processing regagent actions and opinions
     mean_selection_rate, mean_expression_rate = process_regagent_actions(all_actions, providers, n_steps)
-    actions_history[episode] = mean_selection_rate # add occurrences of each action (as %)
-    opinions_history[episode] = mean_expression_rate # add occurrences of each opinion (as %)
+    actions_history[episode] = mean_selection_rate 
+    opinions_history[episode] = mean_expression_rate
     # Process regagents loss
-    loss1_history[episode] = np.mean(loss1_agents[episode]) # mean loss for actions
-    loss2_history[episode] = np.mean(loss2_agents[episode]) # mean loss for opinions
+    loss1_history[episode] = np.mean(loss1_agents[episode])
+    loss2_history[episode] = np.mean(loss2_agents[episode])
     # Process service provider availability
     sp_availability_episode = process_service_provider_availability(all_actions, providers, sum_sp_availability)
     sp_availability_history[episode] = sp_availability_episode
-    sum_sp_availability = np.zeros(len(providers), dtype=int) # reset count to zero
+    sum_sp_availability = np.zeros(len(providers), dtype=int)
         
     # Visualise data
     if episode != 1 and episode % vis_freq == 0:
@@ -273,9 +273,9 @@ for episode in range(1, number_of_episodes + 1):
         axe[0].legend(loc=(0.01, 0.50), fontsize='x-small')
         # Plot 4.2: Visualise opinion expression rate (%) per episode
         for o in range(nProviders*2):
-            provider_index = o // 2  # Determine which provider this opinion corresponds to
-            opinion_type = "Negative" if o % 2 == 0 else "Positive"  # Alternate between negative and positive
-            linestyle = "--" if o % 2 == 0 else "-"  # Negative: dashed, Positive: solid
+            provider_index = o // 2
+            opinion_type = "Negative" if o % 2 == 0 else "Positive"
+            linestyle = "--" if o % 2 == 0 else "-"
             axe[1].plot(opinions_history[1:episode, o], linestyle, color=colors[provider_index], linewidth=0.9,
                 label=f"{opinion_type} opinion on provider {provider_index + 1}")
         axe[1].set_ylim(0,100)
